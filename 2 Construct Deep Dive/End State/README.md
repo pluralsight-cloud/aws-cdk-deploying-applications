@@ -1,8 +1,11 @@
-# Welcome to your CDK TypeScript project
+# Icon Crop Service
 
-This is a blank project for CDK development with TypeScript.
+This is the partially-complete end state of the Icon Crop application created during the Deploying Applications with the CDK Pluralsight course, module 2.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+It contains code to:
+- Deploy two buckets, one public
+- Deploy an IAM role for Lambda
+- Use an L3 construct to deploy Lambda and a RESTful API with API Gateway, to be refactored out in the next module
 
 ## Useful commands
 
