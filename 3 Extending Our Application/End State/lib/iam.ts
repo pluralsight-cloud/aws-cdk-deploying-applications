@@ -20,10 +20,5 @@ export function createLambdaRole(scope: Construct, iconSourceName: string, iconD
 
       Tags.of(lambdaRole).remove('service');
 
-     /*  lambdaRole.addToPolicy(new iam.PolicyStatement({
-        actions: ['logs:CreateLogGroup', 'logs:CreateLogStream', 'logs:PutLogEvents'],
-        resources: ['*'],
-      })); */
-
       return lambdaRole;
 }

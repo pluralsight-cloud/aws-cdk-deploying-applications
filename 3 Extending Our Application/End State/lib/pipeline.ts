@@ -1,53 +1,46 @@
-import * as cdk from 'aws-cdk-lib';
-import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
-import * as codepipeline_actions from 'aws-cdk-lib/aws-codepipeline-actions';
-import * as codebuild from 'aws-cdk-lib/aws-codebuild';
-import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as codecommit from 'aws-cdk-lib/aws-codecommit';
+import * as cdk from 'aws-cdk-lib';
+import * as pipelines from 'aws-cdk-lib/pipelines';
+import { IconCropStack } from './icon-crop-stack';
 import { Construct } from 'constructs';
 
-export function createPipeline(scope: Construct, iconCrop: lambda.IFunction): void {
-  const sourceOutput = new codepipeline.Artifact();
-  const buildOutput = new codepipeline.Artifact();
+export class IconCropPipelineStack extends cdk.Stack {
+  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+    super(scope, id, props);
 
-  const repo = new codecommit.Repository(scope, 'IconCropRepo', {
-    repositoryName: 'icon-crop2',
-  });
+    // Create a new CodeCommit repository
+    const repo = new codecommit.Repository(this, 'IconCropRepo', {
+      repositoryName: 'IconCropRepo',
+    });
 
-  new codepipeline.Pipeline(scope, 'Pipeline', {
-    stages: [
-      {
-        stageName: 'Source',
-        actions: [new codepipeline_actions.CodeCommitSourceAction({
-          actionName: 'CodeCommit_Source',
-          repository: repo,
-          branch: 'main',
-          output: sourceOutput,
-        })],
-      },
-      {
-        stageName: 'Build',
-        actions: [new codepipeline_actions.CodeBuildAction({
-          actionName: 'CodeBuild',
-          project: new codebuild.PipelineProject(scope, 'BuildProject'),
-          input: sourceOutput,
-          outputs: [buildOutput],
-        })],
-      },
-      {
-        stageName: 'Deploy',
-        actions: [new codepipeline_actions.CloudFormationCreateUpdateStackAction({
-          actionName: 'CFN_Deploy',
-          stackName: 'IconCropStack',
-          templatePath: buildOutput.atPath('IconCropStack.template.json'),
-          adminPermissions: true,
-        })],
-      },
-    ],
-  });
+    const pipeline = new pipelines.CodePipeline(this, 'Pipeline', {
+      pipelineName: 'IconCropPipeline',
+      synth: new pipelines.ShellStep('Synth', {
+        input: pipelines.CodePipelineSource.codeCommit(repo, 'main'),
+        commands: [
+          'npm ci',
+          'npm run build',
+          'npx cdk synth'
+        ],
+        primaryOutputDirectory: 'cdk.out'
+      }),
+    });
 
-  new cdk.CfnOutput(scope, 'CodeCommitHttpUrl', {
-    value: repo.repositoryCloneUrlHttp,
-    description: 'The HTTP URL of the CodeCommit repository',
-  });
+    pipeline.addStage(new IconCropAppStage(this, 'Dev'));
+
+    // Output the CodeCommit repository URL
+    new cdk.CfnOutput(this, 'RepoUrl', {
+      value: repo.repositoryCloneUrlHttp,
+      description: 'The URL of the newly created CodeCommit repository',
+      exportName: 'IconCropRepoUrl',
+    });
+  }
+}
+
+class IconCropAppStage extends cdk.Stage {
+  constructor(scope: Construct, id: string, props?: cdk.StageProps) {
+    super(scope, id, props);
+
+    new IconCropStack(this, 'IconCropStack', {});
+  }
 }
