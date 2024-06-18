@@ -1,11 +1,14 @@
 # Icon Crop Service
 
-This is the partially-complete end state of the Icon Crop application created during the Deploying Applications with the CDK Pluralsight course, module 2.
+This is the complete end state of the Icon Crop application created during the Deploying Applications with the CDK Pluralsight course, module 3.
 
-It contains code to:
-- Deploy two buckets, one public
-- Deploy an IAM role for Lambda
-- Use an L3 construct to deploy Lambda and a RESTful API with API Gateway, to be refactored out in the next module
+It contains code for:
+- Two buckets, one public
+- An IAM role for Lambda
+- A Lambda function
+- An API Gateway endpoint
+- CloudWatch monitoring with alert and dashboard
+- A CDK Pipeline using CodeCommit and CodePipeline
 
 ## Useful commands
 
