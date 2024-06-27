@@ -9,25 +9,9 @@ export function createIconBuckets(scope: Construct): { iconSource: s3.Bucket, ic
       removalPolicy: RemovalPolicy.DESTROY,
     });
 
-    let iconDest: s3.Bucket;
-
-    try {
-        iconDest = s3.Bucket.fromBucketName(scope, 'iconDest', 'icon-destination-bucket-public') as s3.Bucket;
-    } catch (error) {
-        iconDest = new s3.Bucket(scope, 'iconDest', {
-            bucketName: 'icon-destination-bucket-public',
-            blockPublicAccess: new s3.BlockPublicAccess({
-                blockPublicAcls: false,
-                blockPublicPolicy: false,
-                ignorePublicAcls: false,
-                restrictPublicBuckets: false,
-            }),
-            publicReadAccess: true,
-            removalPolicy: RemovalPolicy.RETAIN,
-        });
-    }
+    // iconDest = s3.Bucket.fromBucketName(scope, 'iconDest', 'icon-destination-bucket-public-name-here') as s3.Bucket;
     
-    /* const iconDest = new s3.Bucket(scope, 'iconDest', {
+    const iconDest = new s3.Bucket(scope, 'iconDest', {
         bucketName: 'icon-destination-bucket-public',
         blockPublicAccess: new s3.BlockPublicAccess({
             blockPublicAcls: false,
@@ -36,8 +20,8 @@ export function createIconBuckets(scope: Construct): { iconSource: s3.Bucket, ic
             restrictPublicBuckets: false,
           }),
         publicReadAccess: true,
-        removalPolicy: RemovalPolicy.RETAIN,
-    }); */
+        removalPolicy: RemovalPolicy.DESTROY,
+    });
 
     iconDest.addToResourcePolicy(new iam.PolicyStatement({
         actions: ['s3:GetObject'],
