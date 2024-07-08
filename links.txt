@@ -1,0 +1,10 @@
+# AWS CDK v2 Documentation
+https://docs.aws.amazon.com/cdk/api/v2/
+
+# APIGatewayToLambda GitHub
+
+https://github.com/awslabs/aws-solutions-constructs/tree/main/source/patterns/%40aws-solutions-constructs/aws-apigateway-lambda
+
+# APIGatewayToLambda Documentation
+https://docs.aws.amazon.com/solutions/latest/constructs/aws-apigateway-lambda.html
+
